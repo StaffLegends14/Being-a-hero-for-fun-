@@ -5,10 +5,17 @@ const Constraint = Matter.Constraint;
 
 var engine, world;
 var canvas;
-var palyer, playerBase, playerArcher;
-var computer, computerBase, computerArcher;
+var palyer, playerBase;
+var computer, computerBase;
+
+//Declare an array for arrows playerArrows = [ ]
 var playerArrows = [];
-var computerArrows = [];
+var computerArrows = []
+var arrow;
+
+function preload(){
+  backgroundImg = loadImage("assets/background.gif")
+}
 
 
 function setup() {
@@ -38,18 +45,20 @@ function setup() {
     50,
     180
   );
-
   computerArcher = new ComputerArcher(
-    width - 350,
+    width - 340,
     computerBase.body.position.y - 180,
     120,
     120
   );
-  handleComputerArcher();
+  //Function to manage computer Arrows
+  handleComputerArcher(); 
+
+
 }
 
 function draw() {
- // background(backgroundImg);
+  background(backgroundImg);
 
   Engine.update(engine);
 
@@ -59,55 +68,70 @@ function draw() {
   textSize(40);
   text("EPIC ARCHERY", width / 2, 100);
 
-  for (var i = 0; i < playerArrows.length; i++) {
-    showArrows(i, playerArrows);
-  }
-
-  playerBase.display();
-  player.display();
-  
   playerArcher.display();
   handlePlayerArrowCollision();
 
-  for (var i = 0; i < computerArrows.length; i++) {
-    showArrows(i, computerArrows);
-  }
-  //call Player.life and computerplayer.life
-
+ 
+  playerBase.display();
+  player.display();
+  
 
   computerBase.display();
   computer.display();
   
-  computerArcher.display();
-  handleComputerArrowCollision();
+  playerArcher.display();
+  computerArcher.display()
+
+ // Use for loop to display arrow using showArrow() function
+ for (var i = 0; i < playerArrows.length; i++) {
+  showArrows(i, playerArrows);
+}
+
+for (var i = 0; i < computerArrows.length; i++) {
+  showArrows(i, computerArrows);
+}
+
+
+//Call functions to detect collision for player and computer
+
 }
 
 function keyPressed() {
-  if (keyCode === 32) {
+
+  if(keyCode === 32){
+    // create an arrow object and add into an array ; set its angle same as angle of playerArcher
     var posX = playerArcher.body.position.x;
     var posY = playerArcher.body.position.y;
-    var angle = playerArcher.body.angle;
+    var angle = playerArcher.body.angle+PI/2;
 
-    var arrow = new PlayerArrow(posX, posY, 100, 10, angle);
+    var arrow = new PlayerArrow(posX, posY, 100, 10);
 
     arrow.trajectory = [];
     Matter.Body.setAngle(arrow.body, angle);
     playerArrows.push(arrow);
+
   }
 }
 
-function keyReleased() {
-  if (keyCode === 32) {
+function keyReleased () {
+
+  if(keyCode === 32){
+    //call shoot() function for each arrow in an array playerArrows
     if (playerArrows.length) {
-      var angle = playerArcher.body.angle;
+      var angle = playerArcher.body.angle+PI/2;
       playerArrows[playerArrows.length - 1].shoot(angle);
     }
   }
-}
 
+}
+//Display arrow and Tranjectory
 function showArrows(index, arrows) {
   arrows[index].display();
+  
+    
+  
  
+
 }
 
 function handleComputerArcher() {
@@ -195,3 +219,4 @@ function handleComputerArrowCollision() {
     }
   }
 }
+
